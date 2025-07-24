@@ -1,4 +1,8 @@
+import json from "../demo.json";
+import type { ShelfData } from "../types";
+import { ArticleList } from "../components/ArticleList";
 
 export const Shelf = () => {
-  return <div>aa hello</div>
-}
+  const data = json as ShelfData[];
+  return <ArticleList data={data} />;
+};
