@@ -1,9 +1,16 @@
 import { Fragment, useCallback, useEffect, useState } from "react";
+import type { FC } from "react";
 import Markdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { atomDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 
-const CodeBlock = ({ inline, className, children }: any) => {
+interface CodeBlockProps {
+  inline?: boolean;
+  className?: string;
+  children?: React.ReactNode;
+}
+
+const CodeBlock: FC<CodeBlockProps> = ({ inline, className, children }) => {
   if (inline) {
     return <code className={className}>{children}</code>;
   }
@@ -22,12 +29,12 @@ const CodeBlock = ({ inline, className, children }: any) => {
   );
 };
 
-const AnchorTag = ({ node, children, ...props }: any) => {
-  try {
-    new URL(props.href ?? "");
+const AnchorTag: FC<React.HTMLProps<HTMLAnchorElement>> = ({ children, ...props }) => {
+  const isExternal = props.href && /^(https?:\/\/|www\.)/.test(props.href);
+  if (isExternal) {
     props.target = "_blank";
     props.rel = "noopener noreferrer";
-  } catch (e) {}
+  }
   return <a {...props}>{children}</a>;
 };
 
