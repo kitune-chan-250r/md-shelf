@@ -1,0 +1,27 @@
+services:
+  frontend:
+    build:
+      context: ./front/.devcontainer
+      dockerfile: Dockerfile
+    tty: true
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./front/:/workspace
+    networks:
+      - container-network
+
+  backend:
+    build:
+      context: ./backend/.devcontainer
+      dockerfile: Dockerfile
+    tty: true
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./backend/:/workspace
+    networks:
+      - container-network
+
+networks:
+  container-network:
