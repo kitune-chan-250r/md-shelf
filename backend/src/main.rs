@@ -4,7 +4,7 @@ use actix_web::{App, HttpServer, web};
 use tokio::time::interval;
 mod features;
 
-use features::summary;
+use features::{articles, shelfs, summary};
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -28,7 +28,9 @@ async fn main() -> std::io::Result<()> {
     });
 
     HttpServer::new(|| {
-        App::new().service(web::scope("").configure(features::shelfs::route::init_routes))
+        App::new()
+            .service(web::scope("/shelf").configure(shelfs::route::init_routes))
+            .service(web::scope("").configure(articles::route::init_routes))
     })
     .bind(("0.0.0.0", 8080))?
     .run()
