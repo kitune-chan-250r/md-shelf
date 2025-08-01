@@ -1,15 +1,8 @@
 use std::{error::Error, fs, io::BufWriter, path::Path, str::FromStr};
 
-use actix_web::{HttpResponse, Responder};
 use pulldown_cmark::{Event, HeadingLevel, Parser, Tag};
 
 use super::super::shelfs::model::ArticleSummary;
-
-pub async fn test_wrap() -> impl Responder {
-    scheduled_create_summary();
-
-    HttpResponse::Ok().json("ok")
-}
 
 /**
  * shelfsで返すデータを作成する
