@@ -1,9 +1,12 @@
-use actix_web::{App, HttpResponse, HttpServer, web};
+use actix_web::{App, HttpServer, web};
+mod features;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    HttpServer::new(|| App::new().route("/", web::get().to(HttpResponse::Ok)))
-        .bind(("0.0.0.0", 8080))?
-        .run()
-        .await
+    HttpServer::new(|| {
+        App::new().service(web::scope("").configure(features::shelfs::route::init_routes))
+    })
+    .bind(("0.0.0.0", 8080))?
+    .run()
+    .await
 }
