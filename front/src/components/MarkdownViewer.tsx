@@ -42,7 +42,7 @@ export const MarkdownViewer = () => {
   const [markdownText, setMarkdownText] = useState("");
 
   const fetchMarkDown = useCallback(async (filename: string) => {
-    const response = await fetch(`/${filename}`);
+    const response = await fetch(`/api/article/${filename}`);
     if (response.ok) {
       setMarkdownText(await response.text());
     } else {
