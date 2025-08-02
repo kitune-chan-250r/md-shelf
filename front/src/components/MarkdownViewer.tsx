@@ -1,4 +1,4 @@
-import { Fragment, useCallback, useEffect, useState } from "react";
+import { Fragment } from "react";
 import type { FC } from "react";
 import Markdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
@@ -38,24 +38,11 @@ const AnchorTag: FC<React.HTMLProps<HTMLAnchorElement>> = ({ children, ...props 
   return <a {...props}>{children}</a>;
 };
 
-export const MarkdownViewer = () => {
-  const [markdownText, setMarkdownText] = useState("");
+interface Props {
+  markdownText: string;
+}
 
-  const fetchMarkDown = useCallback(async (filename: string) => {
-    const response = await fetch(`/api/article/${filename}`);
-    if (response.ok) {
-      setMarkdownText(await response.text());
-    } else {
-      console.warn("fetchMarkDown faild");
-    }
-  }, []);
-
-  useEffect(() => {
-    void (async () => {
-      await fetchMarkDown("actix-web-module-structure.md");
-    })();
-  }, [fetchMarkDown]);
-
+export const MarkdownViewer: FC<Props> = ({ markdownText }) => {
   return (
     <Fragment>
       <Markdown components={{ a: AnchorTag, code: CodeBlock }}>{markdownText}</Markdown>
