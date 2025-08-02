@@ -26,7 +26,8 @@
 				"ms-azuretools.vscode-docker",
 				"dbaeumer.vscode-eslint",
 				"esbenp.prettier-vscode",
-				"pixl-garden.bongocat"
+				"pixl-garden.bongocat",
+				"google.geminicodeassist"
 			]
 		},
 		"settings": {

@@ -36,7 +36,8 @@
 				"dustypomerleau.rust-syntax",
 				"jscearcy.rust-doc-viewer",
 				"tamasfe.even-better-toml",
-				"fill-labs.dependi"
+				"fill-labs.dependi",
+				"google.geminicodeassist"
 			],
 			"settings": {
 				"[rust]": {
