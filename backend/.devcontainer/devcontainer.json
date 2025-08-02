@@ -6,7 +6,7 @@
 	// "image": "mcr.microsoft.com/devcontainers/rust:1-1-bullseye",
 	"dockerComposeFile": "../../docker-compose.yml",
 	"service": "backend",
-	"workspaceFolder": "/workspace",
+	"workspaceFolder": "/workspace/backend",
 	// Use 'mounts' to make the cargo cache persistent in a Docker Volume.
 	// "mounts": [
 	// 	{

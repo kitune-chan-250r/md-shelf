@@ -7,7 +7,7 @@ services:
     ports:
       - "5173:5173"
     volumes:
-      - ./front/:/workspace
+      - .:/workspace
     networks:
       - container-network
 
@@ -19,7 +19,7 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - ./backend/:/workspace
+      - .:/workspace
     networks:
       - container-network
 
