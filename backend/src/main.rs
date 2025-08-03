@@ -1,6 +1,7 @@
 use std::time::Duration;
 
 use actix_web::{App, HttpServer, web};
+use actix_web_lab::web::spa;
 use tokio::time::interval;
 mod features;
 
@@ -31,11 +32,18 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .service(web::scope("/api/shelf").configure(shelfs::route::init_routes))
             .service(web::scope("/api").configure(articles::route::init_routes))
-            .default_service(
-                actix_files::Files::new("/", "./static")
-                    .index_file("index.html")
-                    .redirect_to_slash_directory()
-                    .use_last_modified(true),
+            // .service(
+            //     actix_files::Files::new("/", "./static")
+            //         .index_file("index.html")
+            //         .redirect_to_slash_directory()
+            //         .use_last_modified(true),
+            // )
+            .service(
+                spa()
+                    .index_file("./static/index.html")
+                    .static_resources_mount("/")
+                    .static_resources_location("./static")
+                    .finish(),
             )
     })
     .bind(("0.0.0.0", 80))?
