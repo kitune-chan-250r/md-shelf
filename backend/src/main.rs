@@ -29,10 +29,16 @@ async fn main() -> std::io::Result<()> {
 
     HttpServer::new(|| {
         App::new()
-            .service(web::scope("/shelf").configure(shelfs::route::init_routes))
-            .service(web::scope("").configure(articles::route::init_routes))
+            .service(web::scope("/api/shelf").configure(shelfs::route::init_routes))
+            .service(web::scope("/api").configure(articles::route::init_routes))
+            .default_service(
+                actix_files::Files::new("/", "./static")
+                    .index_file("index.html")
+                    .redirect_to_slash_directory()
+                    .use_last_modified(true),
+            )
     })
-    .bind(("0.0.0.0", 8080))?
+    .bind(("0.0.0.0", 80))?
     .run()
     .await
 }
