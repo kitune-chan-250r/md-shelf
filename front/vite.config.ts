@@ -20,7 +20,7 @@ export default defineConfig({
         // オリジンを転送先に変更
         changeOrigin: true,
         // パスの書き換え（例: /api/users -> /users）
-        rewrite: (path) => path.replace(/^\/api/, ""),
+        // rewrite: (path) => path.replace(/^\/api/, ""),
       },
     },
     // devcontainer内で外部からアクセスするためにhost設定が必要な場合があります

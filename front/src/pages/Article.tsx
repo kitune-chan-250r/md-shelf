@@ -30,12 +30,13 @@ export const Article = () => {
       sx={{
         ...fullwh,
         overflow: "auto",
-        // p: 10,
+        p: 3,
         display: "flex",
         justifyContent: "center",
       }}>
       <Box
         sx={{
+          width: "100%",
           maxWidth: 1200,
         }}>
         <MarkdownViewer markdownText={markdownText} />
