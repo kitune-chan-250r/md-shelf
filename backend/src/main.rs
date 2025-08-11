@@ -4,6 +4,7 @@ use std::time::Duration;
 
 use actix_web::{App, HttpServer, middleware::Logger, web};
 use actix_web_lab::web::spa;
+use get_size::GetSize;
 use tokio::time::interval;
 mod features;
 
@@ -11,7 +12,13 @@ use features::{articles, shelfs, summary};
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
-    env_logger::init();
+    // RUST_LOG環境変数からログレベルを読み込み、標準出力にログを出すように設定
+    // Builder::from_default_env()
+    //     .target(env_logger::Target::Stdout)
+    //     .init();
+    env_logger::init_from_env(env_logger::Env::default().default_filter_or("info"));
+
+    log::info!("Starting md-shelf-bg server...");
 
     let summary_cache = Arc::new(Mutex::new(Vec::<shelfs::model::ArticleSummary>::new()));
     let summary_cache_clone = Arc::clone(&summary_cache);
@@ -26,9 +33,18 @@ async fn main() -> std::io::Result<()> {
             match summary::service::scheduled_create_summary() {
                 Ok(result) => {
                     // キャッシュに保存
-                    let mut cache = summary_cache_clone.lock().unwrap();
-                    *cache = result;
-                    log::info!("create summary succeed");
+                    match summary_cache_clone.lock() {
+                        Ok(mut cache) => {
+                            log::info!(
+                                "create summary succeed, cache size: {}",
+                                &result.get_size()
+                            );
+                            *cache = result;
+                        }
+                        Err(err) => {
+                            log::error!("Failed to lock summary cache: {}", err);
+                        }
+                    }
                 }
 
                 Err(err) => {
@@ -58,7 +74,7 @@ async fn main() -> std::io::Result<()> {
                     .finish(),
             )
     })
-    .bind(("0.0.0.0", 8080))?
+    .bind(("0.0.0.0", 80))?
     .run()
     .await
 }

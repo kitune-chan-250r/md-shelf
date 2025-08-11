@@ -12,6 +12,9 @@ pub async fn get_content(path: web::Path<(String,)>) -> impl Responder {
     let path = Path::new(&path_str);
     match fs::read_to_string(path) {
         Ok(content) => return HttpResponse::Ok().body(content),
-        Err(_) => return HttpResponse::NotFound().finish(),
+        Err(_) => {
+            log::error!("Failed to read article file: {}", filename);
+            return HttpResponse::NotFound().finish();
+        }
     };
 }

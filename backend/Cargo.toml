@@ -14,3 +14,5 @@ pulldown-cmark = "0.13.0"
 tokio = { version = "1.46.1", features = ["full"] }
 log = "0.4"
 env_logger = "0.10"
+get-size = "0.1"
+get-size-derive = "0.1"
