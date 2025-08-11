@@ -1,3 +1,5 @@
+use std::sync::Arc;
+use std::sync::Mutex;
 use std::time::Duration;
 
 use actix_web::{App, HttpServer, web};
@@ -9,6 +11,9 @@ use features::{articles, shelfs, summary};
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
+    let summary_cache = Arc::new(Mutex::new(Vec::<shelfs::model::ArticleSummary>::new()));
+    let summary_cache_clone = Arc::clone(&summary_cache);
+
     actix_rt::spawn(async move {
         let mut interval = interval(Duration::from_secs_f32(10.0 * 60.0));
 
@@ -17,7 +22,10 @@ async fn main() -> std::io::Result<()> {
             interval.tick().await;
             // サマリーの作成を行う
             match summary::service::scheduled_create_summary() {
-                Ok(()) => {
+                Ok(result) => {
+                    // キャッシュに保存
+                    let mut cache = summary_cache_clone.lock().unwrap();
+                    *cache = result;
                     println!("create summary succeed");
                 }
 
@@ -28,8 +36,9 @@ async fn main() -> std::io::Result<()> {
         }
     });
 
-    HttpServer::new(|| {
+    HttpServer::new(move || {
         App::new()
+            .app_data(web::Data::new(summary_cache.clone()))
             .service(web::scope("/api/shelf").configure(shelfs::route::init_routes))
             .service(web::scope("/api").configure(articles::route::init_routes))
             // .service(
@@ -46,7 +55,7 @@ async fn main() -> std::io::Result<()> {
                     .finish(),
             )
     })
-    .bind(("0.0.0.0", 80))?
+    .bind(("0.0.0.0", 8080))?
     .run()
     .await
 }

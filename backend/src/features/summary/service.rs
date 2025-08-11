@@ -7,7 +7,7 @@ use super::super::shelfs::model::ArticleSummary;
 /**
  * shelfsで返すデータを作成する
  */
-pub fn scheduled_create_summary() -> Result<(), Box<dyn Error>> {
+pub fn scheduled_create_summary() -> Result<Vec<ArticleSummary>, Box<dyn Error>> {
     // 特定のディレクトリに存在している.mdファイルの一覧を取得
     let target_files = get_target_md_file()?;
 
@@ -23,7 +23,7 @@ pub fn scheduled_create_summary() -> Result<(), Box<dyn Error>> {
     // ファイル書き出し(必ず置き換え)
     export_summary_json(&result)?;
 
-    Ok(())
+    Ok(result)
 }
 
 /**
