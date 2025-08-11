@@ -2,7 +2,7 @@ use std::sync::Arc;
 use std::sync::Mutex;
 use std::time::Duration;
 
-use actix_web::{App, HttpServer, web};
+use actix_web::{App, HttpServer, middleware::Logger, web};
 use actix_web_lab::web::spa;
 use tokio::time::interval;
 mod features;
@@ -11,6 +11,8 @@ use features::{articles, shelfs, summary};
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
+    env_logger::init();
+
     let summary_cache = Arc::new(Mutex::new(Vec::<shelfs::model::ArticleSummary>::new()));
     let summary_cache_clone = Arc::clone(&summary_cache);
 
@@ -26,11 +28,11 @@ async fn main() -> std::io::Result<()> {
                     // キャッシュに保存
                     let mut cache = summary_cache_clone.lock().unwrap();
                     *cache = result;
-                    println!("create summary succeed");
+                    log::info!("create summary succeed");
                 }
 
                 Err(err) => {
-                    println!("{:?}", err);
+                    log::error!("{:?}", err);
                 }
             }
         }
@@ -38,6 +40,7 @@ async fn main() -> std::io::Result<()> {
 
     HttpServer::new(move || {
         App::new()
+            .wrap(Logger::default())
             .app_data(web::Data::new(summary_cache.clone()))
             .service(web::scope("/api/shelf").configure(shelfs::route::init_routes))
             .service(web::scope("/api").configure(articles::route::init_routes))

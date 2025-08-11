@@ -16,13 +16,16 @@ pub async fn get_article_list(
 ) -> impl Responder {
     let cache_data = summary_cache.lock().unwrap();
     if !cache_data.is_empty() {
-        println!("use cache data");
+        log::info!("use cache data");
         return HttpResponse::Ok().json(&*cache_data);
     }
 
     match get_list_data() {
         Ok(data) => HttpResponse::Ok().json(data),
-        Err(err) => HttpResponse::InternalServerError().json(err.to_string()),
+        Err(err) => {
+            log::error!("Failed to get list data: {}", err);
+            HttpResponse::InternalServerError().json(err.to_string())
+        }
     }
 }
 
