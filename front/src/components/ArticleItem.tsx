@@ -5,14 +5,18 @@ import { useNavigate } from "react-router";
 interface ArticleItemProps {
   key: string;
   data: ShelfData;
+  saveScrollPosition: () => void;
 }
-export const ArticleItem = ({ key, data }: ArticleItemProps) => {
+export const ArticleItem = ({ key, data, saveScrollPosition }: ArticleItemProps) => {
   const navigate = useNavigate();
   return (
     <Box
       key={key}
       // elevation={3}
-      onClick={() => navigate(`/article/${data.filename}`)}
+      onClick={() => {
+        saveScrollPosition();
+        navigate(`/article/${data.filename}`);
+      }}
       sx={{
         mt: 1.5,
         mb: 1.5,
