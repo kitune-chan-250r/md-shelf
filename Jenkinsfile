@@ -114,39 +114,36 @@ pipeline {
                   '''
                 }
               }
-
-              archiveArtifacts artifacts: 'backend/target/release/md-shelf-bg', fingerprint: true
             }
 
-          }
+            archiveArtifacts artifacts: 'backend/target/release/md-shelf-bg', fingerprint: true
 
-          stage ('[Deploy] - Backend') {
-            environment {
-              // ビルド成果物の置き換え先
-              TARGET_DIR = '/home/ubuntu/md-shelf-service'
-            }
+            stage ('[Deploy] - Backend') {
+              environment {
+                // ビルド成果物の置き換え先
+                TARGET_DIR = '/home/ubuntu/md-shelf-service'
+              }
 
-            steps {
-              echo '[Deploy] Starting Backend Deployment.'
+              steps {
+                echo '[Deploy] Starting Backend Deployment.'
 
-              sh '''
-                set -eu
+                sh '''
+                  set -eu
 
-                : "${TARGET_DIR:?TARGET_DIR is not set}"
-                test -f backend/target/release/md-shelf-bg
+                  : "${TARGET_DIR:?TARGET_DIR is not set}"
+                  test -f backend/target/release/md-shelf-bg
 
-                mkdir -p "$TARGET_DIR"
+                  mkdir -p "$TARGET_DIR"
 
-                # 配置先の既存ファイルを削除
-                find "$TARGET_DIR" \
-                    -mindepth 1 -maxdepth 1 \
-                    -exec rm -rf -- {} +
+                  # 配置先の既存ファイルを削除
+                  rm -f "$TARGET_DIR"/md-shelf-bg
 
-                # バックエンドのバイナリを配置
-                cp backend/target/release/md-shelf-bg "$TARGET_DIR"/
-              '''
+                  # バックエンドのバイナリを配置
+                  cp backend/target/release/md-shelf-bg "$TARGET_DIR"/
+                '''
 
-              echo '[Deploy] Backend Deployment completed successfully.'
+                echo '[Deploy] Backend Deployment completed successfully.'
+              }
             }
           }
         }
