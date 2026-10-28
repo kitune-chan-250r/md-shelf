@@ -3,7 +3,6 @@ pipeline {
 
   stages {
     stage('Checkout') {
-      agent any
       steps {
         checkout scm
       }
@@ -44,7 +43,7 @@ pipeline {
             npm config get cache
 
             npm ci
-            npm run build
+            npm run build-jenkins
           '''
         }
         
@@ -55,7 +54,6 @@ pipeline {
     }
 
     stage('[Deploy] - Frontend') {
-      agent any
       // steps {
       //   // Viteのビルド成果物をJenkinsにアーカイブ(どこのディレクトリにあんねん)
       //   archiveArtifacts artifacts: 'dist/**', fingerpring:true
