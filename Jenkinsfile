@@ -147,6 +147,11 @@ pipeline {
             }
 
             stage ('[Deploy] - Backend Service Restart') {
+              environment {
+                // ビルド成果物の置き換え先
+                TARGET_DIR = '/home/ubuntu/md-shelf-service'
+              }
+              
               steps {
                 echo '[Deploy] Starting Backend Service Restart.'
 
