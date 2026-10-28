@@ -151,7 +151,7 @@ pipeline {
                 // ビルド成果物の置き換え先
                 TARGET_DIR = '/home/ubuntu/md-shelf-service'
               }
-              
+
               steps {
                 echo '[Deploy] Starting Backend Service Restart.'
 
@@ -159,7 +159,7 @@ pipeline {
                   # 起動中のプロセスがあれば停止
                   if pgrep -x md-shelf-bg >/dev/null; then
                       echo "Stopping md-shelf-bg..."
-                      pkill -TERM -x md-shelf-bg
+                      sudo -n pkill -TERM -x md-shelf-bg
                   else
                       rc=$?
 
@@ -174,7 +174,7 @@ pipeline {
                   : "${TARGET_DIR:?TARGET_DIR is not set}"
 
                   # バックグラウンドで起動
-                  nohup "$TARGET_DIR/md-shelf-bg" \
+                  sudo -n nohup "$TARGET_DIR/md-shelf-bg" \
                       > "$TARGET_DIR/md-shelf-bg.log" 2>&1 &
                 '''
 
