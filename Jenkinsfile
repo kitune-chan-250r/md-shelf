@@ -2,8 +2,10 @@ pipeline {
   agent any
 
   stages {
-    stage('') {
-
+    stage('Test echo') {
+      steps {
+        echo 'Hello, Jenkins!'
+      }
     }
   }
 
