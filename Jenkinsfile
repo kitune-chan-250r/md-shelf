@@ -1,10 +1,55 @@
 pipeline {
-  agent any
+  agent none
 
   stages {
-    stage('Test echo') {
+    stage('Checkout') {
+      agent any
       steps {
-        echo 'Hello, Jenkins!'
+        checkout scm
+      }
+    }
+
+    stage('[Build](inside Container) - Frontend') {
+      agent {
+        docker {
+          image 'mcr.microsoft.com/devcontainers/typescript-node:1-22-bullseye'
+        }
+      }
+
+      steps {
+        echo '[Build] Starting Frontend Build inside Docker Container.'
+
+        // 依存関係のインストールとビルド
+        sh 'npm ci'
+        sh 'npm run build'
+
+        echo '[Build] Frontend Build completed successfully.'
+      }
+    }
+
+    stage('[Deploy] - Frontend') {
+      agent any
+      // steps {
+      //   // Viteのビルド成果物をJenkinsにアーカイブ(どこのディレクトリにあんねん)
+      //   archiveArtifacts artifacts: 'dist/**', fingerpring:true
+      // }
+      environment {
+        // ビルド成果物の置き換え先
+        TARGET_DIR = '/home/ubuntu/md-shelf-service/static'
+      }
+      steps {
+        echo '[Deploy] Starting Frontend Deployment.'
+
+        // 対象ディレクトリが無い場合は作成する
+        sh 'mkdir -p ${TARGET_DIR}'
+
+        // ディレクトリ内の古いファイルを削除
+        sh 'rm -rf ${TARGET_DIR}/*'
+
+        // ビルド成果物を対象ディレクトリにコピー
+        sh 'cp -r dist/* ${TARGET_DIR}/'
+
+        echo '[Deploy] Frontend Deployment completed successfully.'
       }
     }
   }
