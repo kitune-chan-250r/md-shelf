@@ -151,8 +151,6 @@ pipeline {
                 echo '[Deploy] Starting Backend Service Restart.'
 
                 sh '''
-                  set -eu
-
                   # プロセスをキル
                   pkill -x md-shelf-bg
 
