@@ -113,10 +113,10 @@ pipeline {
                     cargo build --release
                   '''
                 }
+
+                archiveArtifacts artifacts: 'backend/target/release/md-shelf-bg', fingerprint: true
               }
             }
-
-            archiveArtifacts artifacts: 'backend/target/release/md-shelf-bg', fingerprint: true
 
             stage ('[Deploy] - Backend') {
               environment {
