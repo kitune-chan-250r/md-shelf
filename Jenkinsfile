@@ -1,5 +1,5 @@
 pipeline {
-  agent none
+  agent any
 
   stages {
     stage('Checkout') {
@@ -13,6 +13,7 @@ pipeline {
       agent {
         docker {
           image 'mcr.microsoft.com/devcontainers/typescript-node:1-22-bullseye'
+          reuseNode true
         }
       }
 
@@ -23,12 +24,32 @@ pipeline {
         // ディレクトリを指定したい場合は、cdではなく以下のように指定する
         // cdを使いたい場合は、ワンライナー(一つのsh内)で書くべきらしい
         dir ('front') {
-          // 依存関係のインストールとビルド
-          sh 'npm ci'
-          sh 'npm run build'
+          sh '''
+            set -eu
+
+            echo "=== Execution identity ==="
+            id
+
+            echo "=== Original environment ==="
+            echo "HOME=${HOME:-<unset>}"
+            npm config get cache
+
+            # ホームとnpmキャッシュをワークスペース配下に統一
+            export HOME="$WORKSPACE/.home"
+            export NPM_CONFIG_CACHE="$WORKSPACE/.npm-cache"
+
+            mkdir -p "$HOME" "$NPM_CONFIG_CACHE"
+
+            echo "=== Effective npm cache ==="
+            npm config get cache
+
+            npm ci
+            npm run build
+          '''
         }
         
-
+        // Viteの成果物は front/dist/ にある
+        archiveArtifacts artifacts: 'front/dist/**', fingerprint: true
         echo '[Build] Frontend Build completed successfully.'
       }
     }
@@ -46,14 +67,22 @@ pipeline {
       steps {
         echo '[Deploy] Starting Frontend Deployment.'
 
-        // 対象ディレクトリが無い場合は作成する
-        sh 'mkdir -p ${TARGET_DIR}'
+        sh '''
+          set -eu
 
-        // ディレクトリ内の古いファイルを削除
-        sh 'rm -rf ${TARGET_DIR}/*'
+          : "${TARGET_DIR:?TARGET_DIR is not set}"
+          test -d front/dist
 
-        // ビルド成果物を対象ディレクトリにコピー
-        sh 'cp -r dist/* ${TARGET_DIR}/'
+          mkdir -p "$TARGET_DIR"
+
+          # 配置先の既存ファイルを削除
+          find "$TARGET_DIR" \
+              -mindepth 1 -maxdepth 1 \
+              -exec rm -rf -- {} +
+
+          # distの内容を配置。ドットファイルもコピーする
+          cp -a front/dist/. "$TARGET_DIR"/
+        '''
 
         echo '[Deploy] Frontend Deployment completed successfully.'
       }
