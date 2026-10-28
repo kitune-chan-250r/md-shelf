@@ -19,7 +19,7 @@ pipeline {
       steps {
         echo '[Build] Starting Frontend Build inside Docker Container.'
 
-        sh 'cd frontend'
+        sh 'cd front'
 
         // 依存関係のインストールとビルド
         sh 'npm ci'
