@@ -19,11 +19,15 @@ pipeline {
       steps {
         echo '[Build] Starting Frontend Build inside Docker Container.'
 
-        sh 'cd front'
-
-        // 依存関係のインストールとビルド
-        sh 'npm ci'
-        sh 'npm run build'
+        // sh は独立したシェルで実行されるらしい
+        // ディレクトリを指定したい場合は、cdではなく以下のように指定する
+        // cdを使いたい場合は、ワンライナー(一つのsh内)で書くべきらしい
+        dir ('front') {
+          // 依存関係のインストールとビルド
+          sh 'npm ci'
+          sh 'npm run build'
+        }
+        
 
         echo '[Build] Frontend Build completed successfully.'
       }
