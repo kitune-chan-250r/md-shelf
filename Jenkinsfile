@@ -79,7 +79,7 @@ pipeline {
               -exec rm -rf -- {} +
 
           # distの内容を配置。ドットファイルもコピーする
-          cp -a front/dist/. "$TARGET_DIR"/
+          cp -R front/dist/. "$TARGET_DIR"/
         '''
 
         echo '[Deploy] Frontend Deployment completed successfully.'
