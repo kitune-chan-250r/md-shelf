@@ -145,6 +145,25 @@ pipeline {
                 echo '[Deploy] Backend Deployment completed successfully.'
               }
             }
+
+            stage ('[Deploy] - Backend Service Restart') {
+              steps {
+                echo '[Deploy] Starting Backend Service Restart.'
+
+                sh '''
+                  set -eu
+
+                  # プロセスをキル
+                  pkill -x md-shelf-bg
+
+                  : "${TARGET_DIR:?TARGET_DIR is not set}"
+
+                  # バックグラウンドで起動
+                  nohup "$TARGET_DIR"/md-shelf-bg > "$TARGET_DIR"/md-shelf-bg.log 2>&1 &
+                '''
+
+                echo '[Deploy] Backend Service Restart completed successfully.'
+              }
           }
         }
       }
