@@ -164,6 +164,7 @@ pipeline {
 
                 echo '[Deploy] Backend Service Restart completed successfully.'
               }
+            }
           }
         }
       }
