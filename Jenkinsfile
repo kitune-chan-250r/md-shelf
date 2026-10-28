@@ -155,28 +155,7 @@ pipeline {
               steps {
                 echo '[Deploy] Starting Backend Service Restart.'
 
-                sh '''
-                  # 起動中のプロセスがあれば停止
-                  if pgrep -x md-shelf-bg >/dev/null; then
-                      echo "Stopping md-shelf-bg..."
-                      sudo -n pkill -TERM -x md-shelf-bg
-                  else
-                      rc=$?
-
-                      if [ "$rc" -eq 1 ]; then
-                          echo "md-shelf-bg is not running. Skipping stop."
-                      else
-                          echo "Failed to check md-shelf-bg process." >&2
-                          exit "$rc"
-                      fi
-                  fi
-
-                  : "${TARGET_DIR:?TARGET_DIR is not set}"
-
-                  # バックグラウンドで起動
-                  sudo -n nohup "$TARGET_DIR/md-shelf-bg" \
-                      > "$TARGET_DIR/md-shelf-bg.log" 2>&1 &
-                '''
+                sh 'sudo -n /usr/bin/systemctl restart md-shelf-bg.service'
 
                 echo '[Deploy] Backend Service Restart completed successfully.'
               }
