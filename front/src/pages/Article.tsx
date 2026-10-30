@@ -3,6 +3,7 @@ import { fullwh } from "../utils";
 import { MarkdownViewer } from "../components/MarkdownViewer";
 import { useParams } from "react-router";
 import { useCallback, useEffect, useState } from "react";
+import { MarkdownViewerV2 } from "../components/MarkdownViewerV2";
 
 export const Article = () => {
   const { filename } = useParams();
@@ -39,7 +40,8 @@ export const Article = () => {
           width: "100%",
           maxWidth: 1200,
         }}>
-        <MarkdownViewer markdownText={markdownText} />
+        {/* <MarkdownViewer markdownText={markdownText} /> */}
+        <MarkdownViewerV2 text={markdownText} />
       </Box>
     </Box>
   );
