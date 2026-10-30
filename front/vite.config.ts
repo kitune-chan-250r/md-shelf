@@ -1,9 +1,10 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+import tailwindcss from "@tailwindcss/vite";
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), tailwindcss()],
   server: {
     host: true,
     port: 5173,
@@ -16,7 +17,7 @@ export default defineConfig({
       // '/api' で始まるパスへのリクエストをプロキシする
       "/api": {
         // 転送先
-        target: "http://backend:8080",
+        target: "http://backend:80",
         // オリジンを転送先に変更
         changeOrigin: true,
         // パスの書き換え（例: /api/users -> /users）
