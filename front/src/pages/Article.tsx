@@ -1,6 +1,5 @@
 import { Box } from "@mui/material";
 import { fullwh } from "../utils";
-import { MarkdownViewer } from "../components/MarkdownViewer";
 import { useParams } from "react-router";
 import { useCallback, useEffect, useState } from "react";
 import { MarkdownViewerV2 } from "../components/MarkdownViewerV2";
